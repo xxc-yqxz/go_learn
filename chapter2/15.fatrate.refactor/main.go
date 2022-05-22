@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"basic/chapter2/15.fatrate.refactor/calc"
+	"fmt"
+	_ "math"
+)
 
 func main() {
 	for {
@@ -13,9 +17,9 @@ func main() {
 }
 
 func mainFatRateBody() {
-	weight, tall, age, sexWeight, sex := getMaterialsFromInput()
+	weight, tall, age, _, sex := getMaterialsFromInput()
 	// 2.计算体脂率
-	fateRate := calcFatRate(weight, tall, sex, sexWeight, age)
+	fateRate := calcFatRate(weight, tall, sex, age)
 
 	if fateRate <= 0 {
 		panic("fat rate is not allowed to be nagative")
@@ -69,14 +73,9 @@ func getHealthinessSuggestionsForMale(age int, fateRate float64) {
 	}
 }
 
-func calcFatRate(weight float64, tall float64, sex string, sexWeight int, age int) float64 {
-	var bmi float64 = weight / (tall * tall)
-	if sex == "男" {
-		sexWeight = 1
-	} else {
-		sexWeight = 0
-	}
-	var fateRate float64 = (1.2*bmi + 0.23*float64(age) - 5.4 - 10.8*float64(sexWeight)) / 100
+func calcFatRate(weight float64, tall float64, sex string, age int) float64 {
+	bmi := calc.CalcBMI(tall, weight)
+	var fateRate float64 = calc.CalcFatRate(bmi, age, sex)
 	fmt.Println("体脂率是:", fateRate)
 	return fateRate
 }
